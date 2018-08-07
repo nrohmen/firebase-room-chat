@@ -1,4 +1,4 @@
-package com.nrohmen.roomchat
+package com.nrohmen.roomchat.ui.activity
 
 import android.app.Activity
 import android.content.ContentValues
@@ -6,11 +6,14 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
-import android.view.View
 import com.firebase.ui.auth.AuthUI
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.nrohmen.roomchat.R
 import com.nrohmen.roomchat.R.id.*
+import com.nrohmen.roomchat.ui.fragment.ContactFragment
+import com.nrohmen.roomchat.ui.fragment.ProfileFragment
+import com.nrohmen.roomchat.ui.fragment.RoomFragment
 import kotlinx.android.synthetic.main.activity_main.*
 import org.jetbrains.anko.design.snackbar
 import org.jetbrains.anko.startActivity

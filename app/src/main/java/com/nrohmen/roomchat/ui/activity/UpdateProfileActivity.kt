@@ -1,4 +1,4 @@
-package com.nrohmen.roomchat
+package com.nrohmen.roomchat.ui.activity
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
@@ -6,6 +6,7 @@ import android.view.View
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.iid.FirebaseInstanceId
+import com.nrohmen.roomchat.R
 import com.nrohmen.roomchat.model.User
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_update_profile.*
