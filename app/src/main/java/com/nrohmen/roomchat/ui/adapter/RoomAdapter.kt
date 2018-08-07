@@ -9,6 +9,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.nrohmen.roomchat.R
 import com.nrohmen.roomchat.model.Room
+import org.jetbrains.anko.sdk25.coroutines.onClick
 
 /**
  * Created by root on 1/16/18.
@@ -33,6 +34,9 @@ class RoomAdapter(private val context: Context, private val items: List<Room>, p
         fun bindItem(items: Room, listener: (Room) -> Unit) {
             name.text = items.name
 //            ContextCompat.getDrawable(itemView.context, R.drawable.profile_holder)?.let { Picasso.get().load(items.image).placeholder(it).into(image) }
+            itemView.onClick {
+                listener(items)
+            }
         }
     }
 }

@@ -11,10 +11,12 @@ import android.view.ViewGroup
 import com.google.firebase.firestore.FirebaseFirestore
 import com.nrohmen.roomchat.R
 import com.nrohmen.roomchat.model.Room
+import com.nrohmen.roomchat.ui.activity.ChatActivity
 import com.nrohmen.roomchat.ui.adapter.RoomAdapter
 import kotlinx.android.synthetic.main.fragment_room.*
 import org.jetbrains.anko.support.v4.ctx
 import org.jetbrains.anko.support.v4.onRefresh
+import org.jetbrains.anko.support.v4.startActivity
 
 class RoomFragment : Fragment() {
     private var rooms: MutableList<Room> = mutableListOf()
@@ -53,7 +55,7 @@ class RoomFragment : Fragment() {
 
                         list_room.layoutManager = LinearLayoutManager(ctx)
                         list_room.adapter = RoomAdapter(ctx, rooms) {
-
+                            startActivity<ChatActivity>("name" to it.name)
                         }
 
                         list_room.adapter.notifyDataSetChanged()
