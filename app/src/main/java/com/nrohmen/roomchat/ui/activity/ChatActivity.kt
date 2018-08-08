@@ -3,10 +3,9 @@ package com.nrohmen.roomchat.ui.activity
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
-import android.widget.ImageView
 import com.nrohmen.roomchat.R
 import com.nrohmen.roomchat.model.Message
-import com.nrohmen.roomchat.model.MessagesFixtures
+import com.nrohmen.roomchat.model.User
 import com.squareup.picasso.Picasso
 import com.stfalcon.chatkit.commons.ImageLoader
 import com.stfalcon.chatkit.messages.MessageInput
@@ -18,7 +17,7 @@ class ChatActivity : AppCompatActivity(), MessageInput.InputListener{
 
     private var messagesList: MessagesList? = null
     private lateinit var messagesAdapter: MessagesListAdapter<Message>
-    private val senderId = "1"
+    private val senderId = "0"
     private lateinit var imageLoader: ImageLoader
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -46,8 +45,16 @@ class ChatActivity : AppCompatActivity(), MessageInput.InputListener{
     }
 
     override fun onSubmit(input: CharSequence): Boolean {
+        val user = User(
+                "0",
+                "Nur",
+                "http://i.imgur.com/pv1tBmT.png",
+                " ",
+                " ",
+                "",
+                " ")
         messagesAdapter.addToStart(
-                MessagesFixtures.getTextMessage(input.toString()), true)
+                Message("0", user, input.toString()), true)
         return true
     }
 
