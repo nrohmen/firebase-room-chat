@@ -12,4 +12,7 @@
     <string name="save">Save</string>
     <string name="no_contact">No contact</string>
     <string name="no_room">No room</string>
+    <string name="hint_enter_a_message">Type a message…</string>
+    <string name="start_typing_status">start typing</string>
+    <string name="stop_typing_status">stop typing</string>
 </resources>

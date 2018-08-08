@@ -38,7 +38,7 @@ class ContactAdapter(private val context: Context, private val items: List<User>
             name.text = items.name
             phone.text = items.phone
             email.text = items.email
-            ContextCompat.getDrawable(itemView.context, R.drawable.profile_holder)?.let { Picasso.get().load(items.image).placeholder(it).into(image) }
+            ContextCompat.getDrawable(itemView.context, R.drawable.profile_holder)?.let { Picasso.get().load(items.avatar).placeholder(it).into(image) }
         }
     }
 }

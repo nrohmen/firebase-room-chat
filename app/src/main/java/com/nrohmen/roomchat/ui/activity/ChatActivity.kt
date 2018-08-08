@@ -1,13 +1,25 @@
 package com.nrohmen.roomchat.ui.activity
 
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
-
+import android.widget.ImageView
 import com.nrohmen.roomchat.R
+import com.nrohmen.roomchat.model.Message
+import com.nrohmen.roomchat.model.MessagesFixtures
+import com.squareup.picasso.Picasso
+import com.stfalcon.chatkit.commons.ImageLoader
+import com.stfalcon.chatkit.messages.MessageInput
+import com.stfalcon.chatkit.messages.MessagesList
+import com.stfalcon.chatkit.messages.MessagesListAdapter
 import kotlinx.android.synthetic.main.activity_chat.*
 
-class ChatActivity : AppCompatActivity() {
+class ChatActivity : AppCompatActivity(), MessageInput.InputListener{
+
+    private var messagesList: MessagesList? = null
+    private lateinit var messagesAdapter: MessagesListAdapter<Message>
+    private val senderId = "1"
+    private lateinit var imageLoader: ImageLoader
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -15,6 +27,12 @@ class ChatActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
         supportActionBar?.title = intent.getStringExtra("name")
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+        imageLoader = ImageLoader { imageView, url -> Picasso.get().load(url).into(imageView) }
+
+        this.messagesList = findViewById(R.id.messagesList)
+        input.setInputListener(this)
+        initAdapter()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -25,5 +43,16 @@ class ChatActivity : AppCompatActivity() {
             }
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    override fun onSubmit(input: CharSequence): Boolean {
+        messagesAdapter.addToStart(
+                MessagesFixtures.getTextMessage(input.toString()), true)
+        return true
+    }
+
+    private fun initAdapter() {
+        messagesAdapter = MessagesListAdapter(senderId, imageLoader)
+        this.messagesList?.setAdapter(messagesAdapter)
     }
 }

@@ -6,6 +6,7 @@
     <color name="colorPrimaryText">#212121</color>
     <color name="colorSecondaryText">#868686</color>
     <color name="colorDarkGrey">#555555</color>
+    <color name="colorGrayLight">#e8e8e8</color>
     <color name="colorEdit">#f7f7f9</color>
     <color name="colorNol">#00000000</color>
     <color name="colorDivider">#abd6d3d3</color>

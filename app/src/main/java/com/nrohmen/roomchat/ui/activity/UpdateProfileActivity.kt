@@ -34,8 +34,8 @@ class UpdateProfileActivity : AppCompatActivity() {
     private fun doRegister(){
         progress_bar.visibility = View.VISIBLE
         val userId = FirebaseAuth.getInstance().currentUser?.uid
-        val data = User(userId.toString(), name.text.toString(), email.text.toString(), phone.text.toString(), "User",
-                FirebaseAuth.getInstance().currentUser?.photoUrl.toString(), FirebaseInstanceId.getInstance().token.toString())
+        val data = User(userId.toString(), name.text.toString(), FirebaseAuth.getInstance().currentUser?.photoUrl.toString(), email.text.toString(),
+                phone.text.toString(), "User", FirebaseInstanceId.getInstance().token.toString())
         data.let { it ->
             db.collection("users").document(userId.toString())
                     .set(it)
