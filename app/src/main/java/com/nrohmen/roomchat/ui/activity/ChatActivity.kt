@@ -21,6 +21,7 @@ import com.stfalcon.chatkit.messages.MessagesListAdapter
 import kotlinx.android.synthetic.main.activity_chat.*
 import kotlinx.android.synthetic.main.activity_update_profile.*
 import org.jetbrains.anko.design.snackbar
+import org.jetbrains.anko.startActivity
 import java.util.*
 
 
@@ -66,7 +67,19 @@ class ChatActivity : AppCompatActivity(), MessageInput.InputListener{
     private fun sendMessage(chat: Chat){
         val ref = db.collection("chat").document(chat.createdAt.toString())
         ref.set(chat)
+                .addOnSuccessListener {
+                    updateRoom(chat.text, chat.createdAt.toString())
+                }
                 .addOnFailureListener { e -> e.message?.let { it1 -> snackbar(btn_save, it1).show() } }
+    }
+
+    private fun updateRoom(msg:String, time:String){
+        db.collection("rooms")
+                .document(roomId)
+                .update("message", msg, "time", time)
+                .addOnFailureListener { e ->
+                    Log.e("error", e.message)
+                }
     }
 
     private fun getData(){

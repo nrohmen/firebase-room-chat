@@ -50,7 +50,8 @@ class RoomFragment : Fragment() {
                         progress_bar.visibility = View.INVISIBLE
                         for (document in task.result) {
                             rooms.add(Room(document.data["roomId"].toString(),
-                                    document.data["name"].toString()))
+                                    document.data["name"].toString(), document.data["image"].toString(),
+                                    document.data["message"].toString(), document.data["time"].toString()))
                         }
 
                         list_room.layoutManager = LinearLayoutManager(ctx)
