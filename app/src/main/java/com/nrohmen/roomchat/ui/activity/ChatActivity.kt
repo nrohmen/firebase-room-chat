@@ -30,7 +30,8 @@ class ChatActivity : AppCompatActivity(), MessageInput.InputListener{
     private lateinit var message: Message
     private lateinit var senderId: String
     private lateinit var user: User
-    private var chats: MutableList<Chat> = mutableListOf()
+    private var msg: MutableList<Message> = mutableListOf()
+    private lateinit var roomId: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,16 +40,9 @@ class ChatActivity : AppCompatActivity(), MessageInput.InputListener{
         supportActionBar?.title = intent.getStringExtra("name")
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
+        roomId = intent.getStringExtra("id")
         senderId = FirebaseAuth.getInstance().currentUser?.uid.toString()
         imageLoader = ImageLoader { imageView, url -> Picasso.get().load(url).into(imageView) }
-        user =  User(
-                senderId,
-                FirebaseAuth.getInstance().currentUser?.displayName.toString(),
-                FirebaseAuth.getInstance().currentUser?.photoUrl.toString(),
-                FirebaseAuth.getInstance().currentUser?.email.toString(),
-                "",
-                "",
-                FirebaseInstanceId.getInstance().token.toString())
 
         this.messagesList = findViewById(R.id.messagesList)
         input.setInputListener(this)
@@ -61,18 +55,26 @@ class ChatActivity : AppCompatActivity(), MessageInput.InputListener{
     }
 
     override fun onSubmit(input: CharSequence): Boolean {
-        val chat = Chat(senderId, input.toString(), Date())
+        val chat = Chat(roomId, senderId, FirebaseAuth.getInstance().currentUser?.displayName.toString(), FirebaseAuth.getInstance().currentUser?.photoUrl.toString(),
+                input.toString(), Date())
         sendMessage(chat)
 
         return true
     }
 
     private fun sendMessage(chat: Chat){
-
-
-        val ref = db.collection("chat").document()
+        val ref = db.collection("chat").document(chat.createdAt.toString())
         ref.set(chat)
                 .addOnSuccessListener {
+                    user =  User(
+                            senderId,
+                            FirebaseAuth.getInstance().currentUser?.displayName.toString(),
+                            FirebaseAuth.getInstance().currentUser?.photoUrl.toString(),
+                            FirebaseAuth.getInstance().currentUser?.email.toString(),
+                            "",
+                            "",
+                            FirebaseInstanceId.getInstance().token.toString())
+
                     message = Message(ref.id, user, chat.text)
                     messagesAdapter.addToStart(
                             message, true)
@@ -82,17 +84,25 @@ class ChatActivity : AppCompatActivity(), MessageInput.InputListener{
 
     private fun getData(){
         db.collection("chat")
+                .whereEqualTo("roomId", roomId)
                 .get()
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
                         for (document in task.result) {
-                            chats.add(Chat(document.data["userId"].toString(),
-                                    document.data["text"].toString(),
-                                    document.data["createdAt"] as Date?))
+                            user =  User(
+                                    document.data["senderId"].toString(),
+                                    document.data["senderName"].toString(),
+                                    document.data["senderAvatar"].toString(),
+                                    "",
+                                    "",
+                                    "",
+                                    "")
 
                             message = Message(document.id, user, document.data["text"].toString(), document.data["createdAt"] as Date?)
-                            messagesAdapter.addToStart(message, true)
+                            msg.add(message)
                         }
+
+                        messagesAdapter.addToEnd(msg, true)
 
                     } else {
                         Log.e(ContentValues.TAG, "Error getting documents: ", task.exception)

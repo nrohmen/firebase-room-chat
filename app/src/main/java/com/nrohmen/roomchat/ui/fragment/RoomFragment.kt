@@ -55,7 +55,7 @@ class RoomFragment : Fragment() {
 
                         list_room.layoutManager = LinearLayoutManager(ctx)
                         list_room.adapter = RoomAdapter(ctx, rooms) {
-                            startActivity<ChatActivity>("name" to it.name)
+                            startActivity<ChatActivity>("id" to it.roomId, "name" to it.name)
                         }
 
                         list_room.adapter.notifyDataSetChanged()
