@@ -5,7 +5,7 @@ import com.stfalcon.chatkit.commons.models.MessageContentType
 
 import java.util.Date
 
-class Message private constructor(private val id: String, private val user: User, private var text: String?, private var createdAt: Date?) : IMessage {
+class Message constructor(private val id: String, private val user: User, private var text: String?, private var createdAt: Date?) : IMessage {
 
     constructor(id: String, user: User, text: String) : this(id, user, text, Date())
 

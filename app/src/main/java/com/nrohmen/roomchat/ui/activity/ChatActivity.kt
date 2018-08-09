@@ -1,7 +1,9 @@
 package com.nrohmen.roomchat.ui.activity
 
+import android.content.ContentValues
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.view.MenuItem
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -28,6 +30,7 @@ class ChatActivity : AppCompatActivity(), MessageInput.InputListener{
     private lateinit var message: Message
     private lateinit var senderId: String
     private lateinit var user: User
+    private var chats: MutableList<Chat> = mutableListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,6 +41,14 @@ class ChatActivity : AppCompatActivity(), MessageInput.InputListener{
 
         senderId = FirebaseAuth.getInstance().currentUser?.uid.toString()
         imageLoader = ImageLoader { imageView, url -> Picasso.get().load(url).into(imageView) }
+        user =  User(
+                senderId,
+                FirebaseAuth.getInstance().currentUser?.displayName.toString(),
+                FirebaseAuth.getInstance().currentUser?.photoUrl.toString(),
+                FirebaseAuth.getInstance().currentUser?.email.toString(),
+                "",
+                "",
+                FirebaseInstanceId.getInstance().token.toString())
 
         this.messagesList = findViewById(R.id.messagesList)
         input.setInputListener(this)
@@ -57,14 +68,7 @@ class ChatActivity : AppCompatActivity(), MessageInput.InputListener{
     }
 
     private fun sendMessage(chat: Chat){
-        user =  User(
-                senderId,
-                FirebaseAuth.getInstance().currentUser?.displayName.toString(),
-                FirebaseAuth.getInstance().currentUser?.photoUrl.toString(),
-                FirebaseAuth.getInstance().currentUser?.email.toString(),
-                "",
-                "",
-                FirebaseInstanceId.getInstance().token.toString())
+
 
         val ref = db.collection("chat").document()
         ref.set(chat)
@@ -74,6 +78,31 @@ class ChatActivity : AppCompatActivity(), MessageInput.InputListener{
                             message, true)
                 }
                 .addOnFailureListener { e -> e.message?.let { it1 -> snackbar(btn_save, it1).show() } }
+    }
+
+    private fun getData(){
+        db.collection("chat")
+                .get()
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        for (document in task.result) {
+                            chats.add(Chat(document.data["userId"].toString(),
+                                    document.data["text"].toString(),
+                                    document.data["createdAt"] as Date?))
+
+                            message = Message(document.id, user, document.data["text"].toString(), document.data["createdAt"] as Date?)
+                            messagesAdapter.addToStart(message, true)
+                        }
+
+                    } else {
+                        Log.e(ContentValues.TAG, "Error getting documents: ", task.exception)
+                    }
+                }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        getData()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
