@@ -1,13 +1,14 @@
 package com.nrohmen.roomchat.ui.activity
 
-import android.content.ContentValues
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.MenuItem
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.DocumentChange
+import com.google.firebase.firestore.EventListener
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.iid.FirebaseInstanceId
+import com.google.firebase.firestore.QuerySnapshot
 import com.nrohmen.roomchat.R
 import com.nrohmen.roomchat.model.Chat
 import com.nrohmen.roomchat.model.Message
@@ -22,6 +23,7 @@ import kotlinx.android.synthetic.main.activity_update_profile.*
 import org.jetbrains.anko.design.snackbar
 import java.util.*
 
+
 class ChatActivity : AppCompatActivity(), MessageInput.InputListener{
     private val db = FirebaseFirestore.getInstance()
     private var messagesList: MessagesList? = null
@@ -30,7 +32,6 @@ class ChatActivity : AppCompatActivity(), MessageInput.InputListener{
     private lateinit var message: Message
     private lateinit var senderId: String
     private lateinit var user: User
-    private var msg: MutableList<Message> = mutableListOf()
     private lateinit var roomId: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -65,49 +66,37 @@ class ChatActivity : AppCompatActivity(), MessageInput.InputListener{
     private fun sendMessage(chat: Chat){
         val ref = db.collection("chat").document(chat.createdAt.toString())
         ref.set(chat)
-                .addOnSuccessListener {
-                    user =  User(
-                            senderId,
-                            FirebaseAuth.getInstance().currentUser?.displayName.toString(),
-                            FirebaseAuth.getInstance().currentUser?.photoUrl.toString(),
-                            FirebaseAuth.getInstance().currentUser?.email.toString(),
-                            "",
-                            "",
-                            FirebaseInstanceId.getInstance().token.toString())
-
-                    message = Message(ref.id, user, chat.text)
-                    messagesAdapter.addToStart(
-                            message, true)
-                }
                 .addOnFailureListener { e -> e.message?.let { it1 -> snackbar(btn_save, it1).show() } }
     }
 
     private fun getData(){
         db.collection("chat")
                 .whereEqualTo("roomId", roomId)
-                .get()
-                .addOnCompleteListener { task ->
-                    if (task.isSuccessful) {
-                        for (document in task.result) {
-                            user =  User(
-                                    document.data["senderId"].toString(),
-                                    document.data["senderName"].toString(),
-                                    document.data["senderAvatar"].toString(),
-                                    "",
-                                    "",
-                                    "",
-                                    "")
-
-                            message = Message(document.id, user, document.data["text"].toString(), document.data["createdAt"] as Date?)
-                            msg.add(message)
-                        }
-
-                        messagesAdapter.addToEnd(msg, true)
-
-                    } else {
-                        Log.e(ContentValues.TAG, "Error getting documents: ", task.exception)
+                .addSnapshotListener(EventListener<QuerySnapshot> { snapshots, e ->
+                    if (e != null) {
+                        Log.w("error", "listen:error", e)
+                        return@EventListener
                     }
-                }
+
+                    if (snapshots != null) {
+                        for (dc in snapshots.documentChanges) {
+                            if (dc.type == DocumentChange.Type.ADDED) {
+                                user =  User(
+                                        dc.document.data["senderId"].toString(),
+                                        dc.document.data["senderName"].toString(),
+                                        dc.document.data["senderAvatar"].toString(),
+                                        "",
+                                        "",
+                                        "",
+                                        "")
+
+                                message = Message(dc.document.id, user, dc.document.data["text"].toString())
+                                messagesAdapter.addToStart(
+                                        message, true)
+                            }
+                        }
+                    }
+                })
     }
 
     override fun onStart() {

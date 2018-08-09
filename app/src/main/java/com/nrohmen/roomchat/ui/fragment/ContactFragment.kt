@@ -49,10 +49,10 @@ class ContactFragment : Fragment() {
                         for (document in task.result) {
                             users.add(User(document.data["userId"].toString(),
                                     document.data["name"].toString(),
+                                    document.data["avatar"].toString(),
                                     document.data["email"].toString(),
                                     document.data["phone"].toString(),
                                     document.data["role"].toString(),
-                                    document.data["image"].toString(),
                                     document.data["token"].toString()))
                         }
 
