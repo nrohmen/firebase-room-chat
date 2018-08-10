@@ -9,9 +9,9 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import com.nrohmen.roomchat.R
-import com.nrohmen.roomchat.getTime
+import com.nrohmen.roomchat.utils.getTime
 import com.nrohmen.roomchat.model.Room
-import com.nrohmen.roomchat.toDateFormat
+import com.nrohmen.roomchat.utils.toDateFormat
 import com.squareup.picasso.Picasso
 import org.jetbrains.anko.sdk25.coroutines.onClick
 

@@ -23,6 +23,7 @@ import kotlinx.android.synthetic.main.activity_chat.*
 import kotlinx.android.synthetic.main.activity_update_profile.*
 import org.jetbrains.anko.design.snackbar
 import org.jetbrains.anko.startActivity
+import org.jetbrains.anko.support.v4.startActivity
 import java.util.*
 
 
@@ -135,6 +136,7 @@ class ChatActivity : AppCompatActivity(), MessageInput.InputListener{
                 true
             }
             R.id.member -> {
+                startActivity<RoomMemberActivity>("id" to roomId)
                 true
             }
             else -> super.onOptionsItemSelected(item)

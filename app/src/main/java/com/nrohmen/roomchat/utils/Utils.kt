@@ -1,4 +1,4 @@
-package com.nrohmen.roomchat
+package com.nrohmen.roomchat.utils
 
 import android.annotation.SuppressLint
 import java.text.SimpleDateFormat

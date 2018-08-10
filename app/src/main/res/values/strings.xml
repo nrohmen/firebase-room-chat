@@ -16,4 +16,5 @@
     <string name="start_typing_status">start typing</string>
     <string name="stop_typing_status">stop typing</string>
     <string name="member">member</string>
+    <string name="no_member">No member</string>
 </resources>
