@@ -17,4 +17,5 @@
     <string name="stop_typing_status">stop typing</string>
     <string name="member">member</string>
     <string name="no_member">No member</string>
+    <string name="default_notification_channel_id">fcm_default_channel</string>
 </resources>
