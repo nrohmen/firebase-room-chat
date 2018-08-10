@@ -3,6 +3,7 @@ package com.nrohmen.roomchat.ui.activity
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
+import android.view.Menu
 import android.view.MenuItem
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentChange
@@ -34,6 +35,7 @@ class ChatActivity : AppCompatActivity(), MessageInput.InputListener{
     private lateinit var senderId: String
     private lateinit var user: User
     private lateinit var roomId: String
+    private lateinit var role:String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,6 +45,7 @@ class ChatActivity : AppCompatActivity(), MessageInput.InputListener{
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         roomId = intent.getStringExtra("id")
+        role = intent.getStringExtra("role")
         senderId = FirebaseAuth.getInstance().currentUser?.uid.toString()
         imageLoader = ImageLoader { imageView, url -> Picasso.get().load(url).into(imageView) }
 
@@ -117,10 +120,21 @@ class ChatActivity : AppCompatActivity(), MessageInput.InputListener{
         getData()
     }
 
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        if (role == "Admin"){
+            menuInflater.inflate(R.menu.menu_room, menu)
+        }
+        return true
+    }
+
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             android.R.id.home -> {
                 finish()
+                true
+            }
+            R.id.member -> {
                 true
             }
             else -> super.onOptionsItemSelected(item)
