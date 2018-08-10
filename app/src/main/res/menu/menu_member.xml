@@ -2,10 +2,10 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/member"
+        android:id="@+id/add_member"
         android:enabled="true"
         android:title="@string/member"
-        android:icon="@drawable/ic_member"
+        android:icon="@drawable/ic_add_member"
         app:showAsAction="ifRoom" />
 
 </menu>

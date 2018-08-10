@@ -11,6 +11,7 @@ import android.widget.TextView
 import com.nrohmen.roomchat.R
 import com.nrohmen.roomchat.model.User
 import com.squareup.picasso.Picasso
+import org.jetbrains.anko.sdk25.coroutines.onClick
 
 /**
  * Created by root on 1/16/18.
@@ -39,6 +40,9 @@ class ContactAdapter(private val context: Context, private val items: List<User>
             phone.text = items.phone
             email.text = items.email
             ContextCompat.getDrawable(itemView.context, R.drawable.profile_holder)?.let { Picasso.get().load(items.avatar).placeholder(it).into(image) }
+            itemView.onClick {
+                listener(items)
+            }
         }
     }
 }

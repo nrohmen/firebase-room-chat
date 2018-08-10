@@ -18,7 +18,8 @@
         </activity>
         <activity android:name=".ui.activity.UpdateProfileActivity" />
         <activity android:name=".ui.activity.ChatActivity" />
-        <activity android:name=".ui.activity.RoomMemberActivity"></activity>
+        <activity android:name=".ui.activity.RoomMemberActivity" />
+        <activity android:name=".ui.activity.AddMemberActivity"></activity>
     </application>
 
 </manifest>

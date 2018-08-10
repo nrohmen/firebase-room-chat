@@ -48,7 +48,7 @@ class ContactFragment : Fragment() {
                         swipe_refresh.isRefreshing = false
                         progress_bar.visibility = View.INVISIBLE
                         for (document in task.result) {
-                            users.add(User(document.data["userId"].toString(),
+                            users.add(User(document.data["id"].toString(),
                                     document.data["name"].toString(),
                                     document.data["avatar"].toString(),
                                     document.data["email"].toString(),
