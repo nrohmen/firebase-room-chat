@@ -45,24 +45,27 @@ class ContactFragment : Fragment() {
                 .get()
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
-                        swipe_refresh.isRefreshing = false
-                        progress_bar.visibility = View.INVISIBLE
-                        for (document in task.result) {
-                            users.add(User(document.data["id"].toString(),
-                                    document.data["name"].toString(),
-                                    document.data["avatar"].toString(),
-                                    document.data["email"].toString(),
-                                    document.data["phone"].toString(),
-                                    document.data["role"].toString(),
-                                    document.data["token"].toString()))
+                        if (activity!=null){
+                            swipe_refresh.isRefreshing = false
+                            progress_bar.visibility = View.INVISIBLE
+                            for (document in task.result) {
+                                users.add(User(document.data["id"].toString(),
+                                        document.data["name"].toString(),
+                                        document.data["avatar"].toString(),
+                                        document.data["email"].toString(),
+                                        document.data["phone"].toString(),
+                                        document.data["role"].toString(),
+                                        document.data["token"].toString()))
+                            }
+
+                            list_contact.layoutManager = LinearLayoutManager(ctx)
+                            list_contact.adapter = ContactAdapter(ctx, users) {
+
+                            }
+
+                            list_contact.adapter.notifyDataSetChanged()
                         }
 
-                        list_contact.layoutManager = LinearLayoutManager(ctx)
-                        list_contact.adapter = ContactAdapter(ctx, users) {
-
-                        }
-
-                        list_contact.adapter.notifyDataSetChanged()
                     } else {
                         Log.e(ContentValues.TAG, "Error getting documents: ", task.exception)
                     }

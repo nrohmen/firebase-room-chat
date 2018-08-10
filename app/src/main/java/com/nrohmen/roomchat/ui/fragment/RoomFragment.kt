@@ -89,23 +89,26 @@ class RoomFragment : Fragment() {
                 .get()
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
-                        swipe_refresh.isRefreshing = false
-                        progress_bar.visibility = View.INVISIBLE
-                        for (document in task.result) {
+                        if (activity!=null){
+                            swipe_refresh.isRefreshing = false
+                            progress_bar.visibility = View.INVISIBLE
+                            for (document in task.result) {
 
-                            rooms.add(Room(document.data["roomId"].toString(),
-                                    document.data["name"].toString(),
-                                    document.data["image"].toString(),
-                                    document.data["message"].toString(),
-                                    document.data["time"].toString()))
+                                rooms.add(Room(document.data["roomId"].toString(),
+                                        document.data["name"].toString(),
+                                        document.data["image"].toString(),
+                                        document.data["message"].toString(),
+                                        document.data["time"].toString()))
+                            }
+
+
+                            list_room.layoutManager = LinearLayoutManager(ctx)
+                            list_room.adapter = RoomAdapter(ctx, rooms) {
+                                startActivity<ChatActivity>("id" to it.roomId, "name" to it.name, "role" to role)
+                            }
+                            list_room.adapter.notifyDataSetChanged()
                         }
 
-
-                        list_room.layoutManager = LinearLayoutManager(ctx)
-                        list_room.adapter = RoomAdapter(ctx, rooms) {
-                            startActivity<ChatActivity>("id" to it.roomId, "name" to it.name, "role" to role)
-                        }
-                        list_room.adapter.notifyDataSetChanged()
                     } else {
                         Log.e(ContentValues.TAG, "Error getting documents: ", task.exception)
                     }
@@ -119,23 +122,26 @@ class RoomFragment : Fragment() {
                 .get()
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
-                        swipe_refresh.isRefreshing = false
-                        progress_bar.visibility = View.INVISIBLE
-                        for (document in task.result) {
+                        if (activity!=null){
+                            swipe_refresh.isRefreshing = false
+                            progress_bar.visibility = View.INVISIBLE
+                            for (document in task.result) {
 
-                            rooms.add(Room(document.data["roomId"].toString(),
-                                    document.data["name"].toString(),
-                                    document.data["image"].toString(),
-                                    document.data["message"].toString(),
-                                    document.data["time"].toString()))
+                                rooms.add(Room(document.data["roomId"].toString(),
+                                        document.data["name"].toString(),
+                                        document.data["image"].toString(),
+                                        document.data["message"].toString(),
+                                        document.data["time"].toString()))
+                            }
+
+
+                            list_room.layoutManager = LinearLayoutManager(ctx)
+                            list_room.adapter = RoomAdapter(ctx, rooms) {
+                                startActivity<ChatActivity>("id" to it.roomId, "name" to it.name, "role" to role)
+                            }
+                            list_room.adapter.notifyDataSetChanged()
                         }
 
-
-                        list_room.layoutManager = LinearLayoutManager(ctx)
-                        list_room.adapter = RoomAdapter(ctx, rooms) {
-                            startActivity<ChatActivity>("id" to it.roomId, "name" to it.name, "role" to role)
-                        }
-                        list_room.adapter.notifyDataSetChanged()
                     } else {
                         Log.e(ContentValues.TAG, "Error getting documents: ", task.exception)
                     }

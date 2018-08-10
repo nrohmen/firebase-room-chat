@@ -110,14 +110,17 @@ class MainActivity : AppCompatActivity() {
             loginState()
             snackbar(bottom_navigation, "Welcome, "+FirebaseAuth.getInstance().currentUser?.displayName).show()
             val query = db.collection("users")
-                    .whereEqualTo("userId", FirebaseAuth.getInstance().currentUser?.uid)
+                    .whereEqualTo("id", FirebaseAuth.getInstance().currentUser?.uid)
             query.get().addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     val document = task.result
-                    if (document.documents.size != 0) {
-
-                    } else{
+                    if (document.documents.size == 0) {
                         startActivity<UpdateProfileActivity>()
+                    } else{
+                        supportFragmentManager
+                                .beginTransaction()
+                                .replace(R.id.main_layout, RoomFragment(), RoomFragment::class.java.simpleName)
+                                .commit()
                     }
                 } else {
                     Log.d(ContentValues.TAG, "get failed with ", task.exception)
