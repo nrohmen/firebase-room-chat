@@ -73,7 +73,7 @@ class RoomFragment : Fragment() {
                         swipe_refresh.isRefreshing = false
                         progress_bar.visibility = View.INVISIBLE
                         for (document in task.result) {
-                            getRooms(document.data["roomId"].toString())
+                            getRooms(document.data["id"].toString())
                         }
                     } else {
                         Log.e(ContentValues.TAG, "Error getting documents: ", task.exception)

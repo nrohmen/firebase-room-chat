@@ -20,6 +20,8 @@ class RoomMemberActivity internal constructor() : AppCompatActivity() {
     private var users: MutableList<User> = mutableListOf()
     private val db = FirebaseFirestore.getInstance()
     private lateinit var roomId:String
+    private lateinit var name:String
+    private lateinit var role:String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,7 +30,9 @@ class RoomMemberActivity internal constructor() : AppCompatActivity() {
         setSupportActionBar(toolbar)
         supportActionBar?.title = "Room Member"
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        name = intent.getStringExtra("name")
         roomId = intent.getStringExtra("id")
+        role = intent.getStringExtra("role")
         swipe_refresh.setColorSchemeResources(R.color.colorAccent,
                 android.R.color.holo_green_light,
                 android.R.color.holo_orange_light,
@@ -103,7 +107,7 @@ class RoomMemberActivity internal constructor() : AppCompatActivity() {
                 true
             }
             R.id.add_member -> {
-                startActivity<AddMemberActivity>("id" to roomId)
+                startActivity<AddMemberActivity>("id" to roomId, "name" to name, "role" to role)
                 true
             }
             else -> {

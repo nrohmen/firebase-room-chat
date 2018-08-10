@@ -52,11 +52,11 @@ class ChatActivity : AppCompatActivity(), MessageInput.InputListener{
         setContentView(R.layout.activity_chat)
         setSupportActionBar(toolbar)
         roomName = intent.getStringExtra("name")
+        roomId = intent.getStringExtra("id")
+        role = intent.getStringExtra("role")
         supportActionBar?.title = roomName
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        roomId = intent.getStringExtra("id")
-        role = intent.getStringExtra("role")
         senderId = FirebaseAuth.getInstance().currentUser?.uid.toString()
         imageLoader = ImageLoader { imageView, url -> Picasso.get().load(url).into(imageView) }
         subscribeTopic()
@@ -86,7 +86,7 @@ class ChatActivity : AppCompatActivity(), MessageInput.InputListener{
         return retrofit.create(APIService::class.java)
     }
 
-    private fun sendNotif(msg:String){
+    private fun sendNotification(msg:String){
         val service = getServerService()
         val data = BroadcastMessage(Data(msg, roomId, roomName, role), "'$roomId' in topics")
         val reminderCall = service.broadcastReminder(data)
@@ -124,7 +124,7 @@ class ChatActivity : AppCompatActivity(), MessageInput.InputListener{
         val ref = db.collection("chat").document(chat.createdAt.toString())
         ref.set(chat)
                 .addOnSuccessListener {
-                    sendNotif(chat.text)
+                    sendNotification(chat.text)
                     updateRoom(chat.text, chat.createdAt.toString())
                 }
                 .addOnFailureListener { e -> e.message?.let { it1 -> snackbar(btn_save, it1).show() } }
@@ -184,7 +184,7 @@ class ChatActivity : AppCompatActivity(), MessageInput.InputListener{
                 true
             }
             R.id.member -> {
-                startActivity<RoomMemberActivity>("id" to roomId)
+                startActivity<RoomMemberActivity>("id" to roomId, "name" to roomName, "role" to role)
                 true
             }
             else -> super.onOptionsItemSelected(item)

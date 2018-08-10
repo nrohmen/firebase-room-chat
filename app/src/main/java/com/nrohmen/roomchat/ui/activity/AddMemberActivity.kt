@@ -1,32 +1,41 @@
 package com.nrohmen.roomchat.ui.activity
 
 import android.content.ContentValues
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import com.google.firebase.firestore.FirebaseFirestore
 import com.nrohmen.roomchat.R
-import com.nrohmen.roomchat.model.Member
-import com.nrohmen.roomchat.model.User
-import com.nrohmen.roomchat.model.UserRoom
+import com.nrohmen.roomchat.model.*
+import com.nrohmen.roomchat.networking.APIService
+import com.nrohmen.roomchat.networking.ServerConstants
 import com.nrohmen.roomchat.ui.adapter.ContactAdapter
 import kotlinx.android.synthetic.main.activity_room_member.*
-import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.support.v4.onRefresh
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.converter.scalars.ScalarsConverterFactory
 
 class AddMemberActivity : AppCompatActivity() {
     private var users: MutableList<User> = mutableListOf()
     private val db = FirebaseFirestore.getInstance()
     private lateinit var roomId:String
+    private lateinit var name:String
+    private lateinit var role:String
+    private var device: MutableList<String> = mutableListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_member)
-
+        name = intent.getStringExtra("name")
         roomId = intent.getStringExtra("id")
+        role = intent.getStringExtra("role")
         setSupportActionBar(toolbar)
         supportActionBar?.title = "Add Member"
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
@@ -87,11 +96,12 @@ class AddMemberActivity : AppCompatActivity() {
 
     private fun addUserRoom(id:String){
         val data = UserRoom(roomId)
+        device.add(id)
         db.collection("users/$id/rooms")
                 .document(roomId)
                 .set(data)
                 .addOnSuccessListener {
-                    finish()
+                    sendNotification()
                 }
                 .addOnFailureListener { e ->
                     Log.e("error", e.message)
@@ -109,5 +119,36 @@ class AddMemberActivity : AppCompatActivity() {
                 true
             }
         }
+    }
+
+    private fun getServerService(): APIService {
+        val retrofit = Retrofit.Builder()
+                .baseUrl(ServerConstants.URL)
+                .addConverterFactory(ScalarsConverterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create())
+                .build()
+        return retrofit.create(APIService::class.java)
+    }
+
+    private fun sendNotification(){
+        val service = getServerService()
+        val data = Notification(Data("Anda belum menyelesaikan pekerjaan", roomId, name, role), device)
+        val reminderCall = service.sendNotification(data)
+        reminderCall.enqueue(object: Callback<Void> {
+
+            override fun onResponse(call: Call<Void>?, response: Response<Void>?) {
+                finish()
+                Log.i("data", "Request to %s returned %s: %s".format(
+                        response?.raw()?.request()?.url(),
+                        response?.code(),
+                        response?.message()
+                ))
+            }
+
+            override fun onFailure(call: Call<Void>?, t: Throwable?) {
+                Log.e("data", "Request returned error %s".format(t?.message))
+            }
+
+        })
     }
 }
