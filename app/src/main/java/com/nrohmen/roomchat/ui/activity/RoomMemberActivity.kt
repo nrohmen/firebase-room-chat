@@ -29,7 +29,6 @@ class RoomMemberActivity internal constructor() : AppCompatActivity() {
         supportActionBar?.title = "Room Member"
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         roomId = intent.getStringExtra("id")
-        getRoom()
         swipe_refresh.setColorSchemeResources(R.color.colorAccent,
                 android.R.color.holo_green_light,
                 android.R.color.holo_orange_light,
@@ -37,6 +36,11 @@ class RoomMemberActivity internal constructor() : AppCompatActivity() {
         swipe_refresh.onRefresh {
             getRoom()
         }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        getRoom()
     }
 
     private fun getRoom(){

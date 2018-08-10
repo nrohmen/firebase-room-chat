@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import com.nrohmen.roomchat.R
 import com.nrohmen.roomchat.model.Room
 import com.nrohmen.roomchat.ui.activity.ChatActivity
@@ -84,7 +85,7 @@ class RoomFragment : Fragment() {
         rooms.clear()
         db.collection("rooms")
                 .whereEqualTo("roomId", id)
-                .orderBy("time")
+                .orderBy("time", Query.Direction.DESCENDING)
                 .get()
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
@@ -114,7 +115,7 @@ class RoomFragment : Fragment() {
     private fun getAdminRooms(){
         rooms.clear()
         db.collection("rooms")
-                .orderBy("time")
+                .orderBy("time", Query.Direction.DESCENDING)
                 .get()
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {

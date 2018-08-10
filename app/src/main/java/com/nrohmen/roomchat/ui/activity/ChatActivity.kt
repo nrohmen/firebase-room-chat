@@ -50,7 +50,8 @@ class ChatActivity : AppCompatActivity(), MessageInput.InputListener{
         senderId = FirebaseAuth.getInstance().currentUser?.uid.toString()
         imageLoader = ImageLoader { imageView, url -> Picasso.get().load(url).into(imageView) }
 
-        this.messagesList = findViewById(R.id.messagesList)
+        getData()
+        messagesList = findViewById(R.id.messagesList)
         input.setInputListener(this)
         initAdapter()
     }
@@ -107,18 +108,13 @@ class ChatActivity : AppCompatActivity(), MessageInput.InputListener{
                                         "",
                                         "")
 
-                                message = Message(dc.document.id, user, dc.document.data["text"].toString())
+                                message = Message(dc.document.id, user, dc.document.data["text"].toString(), dc.document.data["createdAt"] as Date?)
                                 messagesAdapter.addToStart(
                                         message, true)
                             }
                         }
                     }
                 })
-    }
-
-    override fun onStart() {
-        super.onStart()
-        getData()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
