@@ -84,6 +84,7 @@ class RoomFragment : Fragment() {
         rooms.clear()
         db.collection("rooms")
                 .whereEqualTo("roomId", id)
+                .orderBy("time")
                 .get()
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
@@ -113,6 +114,7 @@ class RoomFragment : Fragment() {
     private fun getAdminRooms(){
         rooms.clear()
         db.collection("rooms")
+                .orderBy("time")
                 .get()
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
